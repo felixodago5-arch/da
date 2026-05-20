@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image" href="assets/image/192.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body >
+<div class="app">
+    <div class="sb-overlay" id="sbOverlay"></div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sb-head">
+            <div class="sb-logo">
+                <img src="assets/image/192.png" alt="FJ" onerror="this.parentElement.textContent='FJ'">
+            </div>
+            <div class="sb-brand">Felix <span>James</span></div>
+            <button id="sbCollapseBtn" class="sb-collapse-btn" title="Toggle sidebar">◀</button>
+        </div>
+        <nav class="sb-nav" id="sbNav">
+            <a data-page="dashboard" class="active">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="3" width="7" height="7" rx="1.5"/>
+                    <rect x="3" y="14" width="7" height="7" rx="1.5"/>
+                    <rect x="14" y="14" width="7" height="7" rx="1.5"/>
+                </svg>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a data-page="designs">
+                <svg viewBox="0 0 24 24">
+                    <rect x="3" y="3" width="18" height="18" rx="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                <span class="nav-text">Designs</span>
+            </a>
+            <a data-page="users">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/>
+                    <circle cx="18" cy="8" r="3"/>
+                    <path d="M22 21v-2a3 3 0 00-2.5-2.9"/>
+                </svg>
+                <span class="nav-text">Users</span>
+            </a>
+            <a data-page="insights">
+                <svg viewBox="0 0 24 24">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                </svg>
+                <span class="nav-text">Insights</span>
+            </a>
+            <a data-page="inbox">
+                <svg viewBox="0 0 24 24">
+                    <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>
+                </svg>
+                <span class="nav-text">Inbox</span> <span class="nav-badge">3</span>
+            </a>
+            <a data-page="assets">
+                <svg viewBox="0 0 24 24">
+                    <path d="M13 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V9z"/>
+                    <polyline points="13 2 13 9 20 9"/>
+                </svg>
+                <span class="nav-text">Assets</span>
+            </a>
+            <a data-page="showcase">
+                <svg viewBox="0 0 24 24">
+                    <rect x="2" y="3" width="20" height="18" rx="2"/>
+                    <path d="M8 21V9l8 6-8 6z"/>
+                </svg>
+                <span class="nav-text">Showcase</span>
+            </a>
+            <a data-page="settings">
+                <svg viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="3"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <span class="nav-text">Settings</span>
+            </a>
+        </nav>
+
+       <a data-page="preview">
+    <svg viewBox="0 0 24 24">
+        <rect x="2" y="3" width="20" height="14" rx="2"/>
+        <path d="M7 21h10M12 17v4"/>
+    </svg>
+    
+</a>
+
+        <div class="sb-foot">
+            <div class="user-mini">
+                <div class="av-sm"><img src="assets/image/192.png" alt="Profile Image"></div>
+               
+                <div class="u-info"><strong>Felix James</strong>Administrator</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN -->
+    <div class="main">
+        <nav class="navbar">
+            <button class="hamburger" id="hamburger">
+                <svg viewBox="0 0 24 24">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+            <div class="srch">
+                <svg class="srch-ic" viewBox="0 0 24 24">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input type="text" placeholder="Search designs, clients, files...">
+            </div>
+            <div class="nb-actions">
+                <div class="dd" id="ddNotif">
+                    <button class="ic-btn" id="notifBtn">
+                        <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                            <path d="M13.73 21a2 2 0 01-3.46 0"/>
+                        </svg>
+                        <span class="badge-dot"></span>
+                    </button>
+                    <div class="dd-menu" style="min-width:260px;">
+                        <div style="padding:7px 11px;font-weight:700;font-size:12px;color:var(--t1);font-family:var(--font-display);">Notifications</div>
+                        <a href="#">📩 New message from Jecinter</a>
+                        <a href="#">⭐ New 5-star testimonial</a>
+                        <a href="#">🖼️ 3 designs synced from Firebase</a>
+                        <div class="sep"></div>
+                        <a href="#" style="color:var(--accent);font-weight:600;">View all →</a>
+                    </div>
+                </div>
+                <button class="ic-btn" id="themeBtn" title="Toggle theme">
+                    <svg id="themeIco" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+                </button>
+                <div class="dd" id="ddProfile">
+                    <button class="av-btn" id="profileBtn"><img src="assets/image/icon-512.png" alt="Profile Image"></button>
+                    <div class="dd-menu">
+                        <a href="#">👤 My Profile</a>
+                        <a href="#">🔑 Security</a>
+                        <a data-page="settings">⚙️ Settings</a>
+                        <div class="sep"></div>
+                        <a href="index.html">🌐 Portfolio</a>
+                        <div class="sep"></div>
+                        <a href="#" style="color:var(--danger);">🚪 Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="portfolio-preview" id="portfolioPreview">
+            <div class="portfolio-preview-panel">
+                <button class="preview-close" onclick="closePreview()">✕</button>
+                <iframe src="https://felixodago5-arch.github.io/test/" title="Portfolio Preview"></iframe>
+            </div>
+        </div>
+        <main class="content" id="mainContent">
+
+            <!-- DASHBOARD -->
+            <section class="page active" id="page-dashboard">
+                <div class="ph"><h2>Dashboard</h2>
+                    <p>Welcome back, Felix. Here's what's happening today.</p>
+                </div>
+                <div class="stats">
+                    <div class="sc">
+                        <div class="sc-ic teal">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="3" y="3" width="18" height="18" rx="2"/>
+                                <circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                            </svg>
+                        </div>
+                        <div class="sc-val">47</div>
+                        <div class="sc-lbl">Total Designs</div>
+                        <div class="sc-ch up">↑ 12% this month</div>
+                    </div>
+                    <div class="sc">
+                        <div class="sc-ic blue">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+                                <circle cx="9" cy="7" r="4"/>
+                                <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+                                <path d="M16 3.13a4 4 0 010 7.75"/>
+                            </svg>
+                        </div>
+                        <div class="sc-val">18</div>
+                        <div class="sc-lbl">Happy Clients</div>
+                        <div class="sc-ch up">↑ 8% this month</div>
+                    </div>
+                    <div class="sc">
+                        <div class="sc-ic amber">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <div class="sc-val">2.4K</div>
+                        <div class="sc-lbl">Portfolio Views</div>
+                        <div class="sc-ch up">↑ 23% this month</div>
+                    </div>
+                    <div class="sc">
+                        <div class="sc-ic green">
+                            <svg viewBox="0 0 24 24">
+                                <rect x="2" y="7" width="20" height="14" rx="2"/>
+                                <path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/>
+                                <line x1="12" y1="12" x2="12" y2="16"/>
+                                <line x1="10" y1="14" x2="14" y2="14"/>
+                            </svg>
+                        </div>
+                        <div class="sc-val">5</div>
+                        <div class="sc-lbl">Active Commissions</div>
+                        <div class="sc-ch up">↑ 2 new</div>
+                    </div>
+                </div>
+                <div class="charts-row">
+                    <div class="cc"><h3>Portfolio Traffic — Last 12 Months</h3><canvas id="lineChart"></canvas></div>
+                    <div class="cc"><h3>Designs by Category</h3><canvas id="barChart"></canvas></div>
+                </div>
+                <div class="br">
+                    <div class="cp">
+                        <h3>Recent Activity</h3>
+                        <div style="overflow-x:auto;">
+                            <table class="at">
+                                <thead><tr><th>Action</th><th>Item</th><th>By</th><th>When</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Uploaded</td><td>ZURI Juice Label</td><td>Felix J.</td><td>2m ago</td></tr>
+                                    <tr><td>New Review</td><td>Jecinter ★★★★★</td><td>Jecinter</td><td>1h ago</td></tr>
+                                    <tr><td>Commission</td><td>Business Card</td><td>George</td><td>3h ago</td></tr>
+                                    <tr><td>Updated</td><td>Tech Thumbnail</td><td>Felix J.</td><td>5h ago</td></tr>
+                                    <tr><td>New View</td><td>Digital Safety</td><td>Visitor</td><td>6h ago</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="cp">
+                        <h3>Commission Progress</h3>
+                        <div class="proj-item">
+                            <div class="proj-ring" style="border:2px solid var(--accent);color:var(--accent);">85%</div>
+                            <div class="proj-inf"><div class="proj-name">Thika Tech Magazine</div><div class="proj-meta">In Progress · Cover Design</div><div class="pbar-bg"><div class="pbar" style="width:85%;"></div></div></div>
+                        </div>
+                        <div class="proj-item">
+                            <div class="proj-ring" style="border:2px solid var(--warn);color:var(--warn);">60%</div>
+                            <div class="proj-inf"><div class="proj-name">ZURI FRESH Label</div><div class="proj-meta">Review · Product Label</div><div class="pbar-bg"><div class="pbar" style="width:60%;background:var(--warn);"></div></div></div>
+                        </div>
+                        <div class="proj-item">
+                            <div class="proj-ring" style="border:2px solid var(--info);color:var(--info);">40%</div>
+                            <div class="proj-inf"><div class="proj-name">Digital Safety Poster</div><div class="proj-meta">Draft · Infographic</div><div class="pbar-bg"><div class="pbar" style="width:40%;background:var(--info);"></div></div></div>
+                        </div>
+                    </div>
+                    <div class="cp">
+                        <h3>Quick Actions</h3>
+                        <button class="qa-btn"><svg viewBox="0 0 24 24">
+                            <line x1="12" y1="5" x2="12" y2="19"/>
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                        </svg>New Design Entry</button>
+                        <button class="qa-btn"><svg viewBox="0 0 24 24">
+                            <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/>
+                            <polyline points="17 8 12 3 7 8"/>
+                            <line x1="12" y1="3" x2="12" y2="15"/>
+                        </svg>Upload to Portfolio</button>
+                        <button class="qa-btn"><svg viewBox="0 0 24 24">
+                            <circle cx="18" cy="5" r="3"/>
+                            <circle cx="6" cy="12" r="3"/>
+                            <circle cx="18" cy="19" r="3"/>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                        </svg>Share Portfolio</button>
+                        <button class="qa-btn"><svg viewBox="0 0 24 24">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+    <polyline points="14 2 14 8 20 8"/>
+</svg>View Full Report</button>
+                    </div>
+                </div>
+            </section>
+             <section class="page" id="page-preview">
+    <div class="ph">
+        <h2>Portfolio Preview</h2>
+        <p>Live preview of your public portfolio site.</p>
+    </div>
+    <div class="preview-frame-wrap">
+        <iframe src="https://felixodago5-arch.github.io/test/" title="Portfolio Preview"></iframe>
+    </div>
+</section>
+            <!-- DESIGNS -->
+            <section class="page" id="page-designs">
+                <div class="ph"><h2>Designs</h2><p>Track all design projects by status.</p></div>
+                <div class="kanban">
+                    <div class="kb-col">
+                        <div class="kb-col-hd">
+                            <h4>Draft</h4>
+                            <span class="kb-cnt">3</span>
+                        </div>
+                        <div class="kb-item">Digital Safety Infographic <span class="pill draft">Draft</span></div>
+                        <div class="kb-item">Nairobi Tourism Poster <span class="pill draft">Draft</span></div>
+                        <div class="kb-item">Business Profile <span class="pill draft">Draft</span></div>
+                    </div>
+                    <div class="kb-col">
+                        <div class="kb-col-hd">
+                            <h4>In Progress</h4>
+                            <span class="kb-cnt">2</span>
+                        </div>
+                        <div class="kb-item">Thika Tech Magazine Cover <span class="pill ip">In Progress</span></div>
+                        <div class="kb-item">ZURI FRESH Label <span class="pill ip">In Progress</span></div>
+                    </div>
+                    <div class="kb-col">
+                        <div class="kb-col-hd">
+                            <h4>Review</h4>
+                            <span class="kb-cnt">2</span>
+                        </div>
+                        <div class="kb-item">Tech Tutorial Thumbnail <span class="pill rev">Review</span></div>
+                        <div class="kb-item">Social Media Pack <span class="pill rev">Review</span></div>
+                    </div>
+                    <div class="kb-col">
+                        <div class="kb-col-hd">
+                            <h4>Completed</h4>
+                            <span class="kb-cnt">3</span>
+                        </div>
+                        <div class="kb-item">Nyakwere Furnitures Brand <span class="pill done">Done</span></div>
+                        <div class="kb-item">House Essentials Logo <span class="pill done">Done</span></div>
+                        <div class="kb-item">Event Flyer Series <span class="pill done">Done</span></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- USERS -->
+            <section class="page" id="page-users">
+                <div class="ph"><h2>Users</h2><p>Admin sees all. Users see only their own profile.</p></div>
+                <div class="admin-card">
+                    <div class="admin-av">FJ</div>
+                    <div class="admin-det">
+                        <h3>Felix James</h3>
+                        <p>Administrator · jamesodago6@gmail.com</p>
+                        <div class="admin-meta">
+                            <div class="meta-chip"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>Nairobi, Kenya</div>
+                            <div class="meta-chip"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Chrome · Windows</div>
+                            <div class="meta-chip"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Last active: Now</div>
+                            <span class="role admin">Administrator</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="users-table-card">
+                    <div class="utc-hd"><h3>All Users</h3><span class="role admin" style="font-size:10.5px;">Admin View Only</span></div>
+                    <div class="utw">
+                        <table class="ut">
+                            <thead><tr><th>User</th><th>Role</th><th>Status</th><th>Last Active</th><th>Device</th><th>Location</th></tr></thead>
+                            <tbody>
+                                <tr>
+                                    <td><div class="u-cell"><div class="u-av">FJ</div><div><div class="u-name">Felix James</div><div class="u-email">jamesodago6@gmail.com</div></div></div></td>
+                                    <td><span class="role admin">Admin</span></td>
+                                    <td><span class="status-ind"><span class="dot on"></span>Online</span></td>
+                                    <td>Now</td><td>Chrome · Windows</td><td>Nairobi, KE</td>
+                                </tr>
+                                <tr>
+                                    <td><div class="u-cell"><div class="u-av">JE</div><div><div class="u-name">Jecinter</div><div class="u-email">jecinter@example.com</div></div></div></td>
+                                    <td><span class="role client">Trusted Client</span></td>
+                                    <td><span class="status-ind"><span class="dot on"></span>Online</span></td>
+                                    <td>12m ago</td><td>Safari · iPhone</td><td>Nairobi, KE</td>
+                                </tr>
+                                <tr>
+                                    <td><div class="u-cell"><div class="u-av">GE</div><div><div class="u-name">George</div><div class="u-email">george@nyakwere.co.ke</div></div></div></td>
+                                    <td><span class="role client">Trusted Client</span></td>
+                                    <td><span class="status-ind"><span class="dot away"></span>Away</span></td>
+                                    <td>2h ago</td><td>Chrome · Android</td><td>Thika, KE</td>
+                                </tr>
+                                <tr>
+                                    <td><div class="u-cell"><div class="u-av">V</div><div><div class="u-name">Visitor</div><div class="u-email">—</div></div></div></td>
+                                    <td><span class="role viewer">Viewer</span></td>
+                                    <td><span class="status-ind"><span class="dot off"></span>Offline</span></td>
+                                    <td>1d ago</td><td>Firefox · Mac</td><td>Unknown</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- INSIGHTS -->
+            <section class="page" id="page-insights">
+                <div class="ph"><h2>Insights</h2><p>Analytics overview of your portfolio performance.</p></div>
+                <div class="kpi-row">
+                    <div class="kpi"><div class="kpi-val">8.4s</div><div class="kpi-lbl">Avg. Session</div></div>
+                    <div class="kpi"><div class="kpi-val">3.2</div><div class="kpi-lbl">Pages / Visit</div></div>
+                    <div class="kpi"><div class="kpi-val">68%</div><div class="kpi-lbl">Bounce Rate</div></div>
+                    <div class="kpi"><div class="kpi-val">12.8%</div><div class="kpi-lbl">Conversion</div></div>
+                </div>
+                <div class="charts-row">
+                    <div class="cc"><h3>Traffic Trends</h3><canvas id="aLineChart"></canvas></div>
+                    <div class="cc"><h3>Engagement Metrics</h3><canvas id="aBarChart"></canvas></div>
+                </div>
+            </section>
+
+            <!-- INBOX -->
+            <section class="page" id="page-inbox" style="padding:0;">
+                <div class="inbox-wrap">
+                    <div class="inbox-left">
+                        <div class="inbox-lhd">
+                            <h2>Inbox</h2>
+                            <div class="inbox-srch">
+                                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                <input type="text" placeholder="Search conversations...">
+                            </div>
+                        </div>
+                        <div class="convo-list" id="convoList"></div>
+                    </div>
+                    <div class="chat-panel" id="chatPanel">
+                        <div class="chat-empty" id="chatEmpty">
+                            <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                            <h3>Select a conversation</h3>
+                            <p>Choose someone from the left to start</p>
+                        </div>
+                        <div class="chat-open" id="chatOpen" style="display:none;">
+                            <div class="chat-hd">
+                                <div class="chat-contact">
+                                    <div class="chat-cav" id="chatCav">SK</div>
+                                    <div>
+                                        <div class="chat-cname" id="chatName">Name</div>
+                                        <div class="chat-cstatus" id="chatStatus">Online</div>
+                                    </div>
+                                </div>
+                                <div class="chat-acts">
+                                    <button class="ic-btn"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 014.11 12 19.79 19.79 0 011.09 3.39a2 2 0 012-1.72h3a2 2 0 012 1.72c.127.96.361 1.9.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0122 16.92z"/></svg></button>
+                                    <button class="ic-btn"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+                                    <button class="ic-btn"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg></button>
+                                </div>
+                            </div>
+                            <div class="msgs" id="msgs"></div>
+                            <div class="chat-inp">
+                                <button class="ic-btn"><svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg></button>
+                                <input type="text" id="msgInput" placeholder="Type a message...">
+                                <button class="send-btn" id="sendBtn"><svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ASSETS -->
+            <section class="page" id="page-assets">
+                <div class="ph"><h2>Assets</h2><p>Design files, mockups and documents.</p></div>
+                <div class="files-grid">
+                    <div class="fc"><div class="fc-icon">📄</div><div class="fc-name">brand_guidelines.pdf</div><div class="fc-size">4.2 MB</div></div>
+                    <div class="fc"><div class="fc-icon">🖼️</div><div class="fc-name">zuri_label_v3.png</div><div class="fc-size">2.8 MB</div></div>
+                    <div class="fc"><div class="fc-icon">🎨</div><div class="fc-name">thika_cover.cdr</div><div class="fc-size">8.6 MB</div></div>
+                    <div class="fc"><div class="fc-icon">📊</div><div class="fc-name">client_report.xlsx</div><div class="fc-size">1.1 MB</div></div>
+                    <div class="fc"><div class="fc-icon">📝</div><div class="fc-name">project_notes.md</div><div class="fc-size">24 KB</div></div>
+                    <div class="fc"><div class="fc-icon">🎬</div><div class="fc-name">showreel_2026.mp4</div><div class="fc-size">156 MB</div></div>
+                    <div class="fc"><div class="fc-icon">🖼️</div><div class="fc-name">digital_safety.png</div><div class="fc-size">3.4 MB</div></div>
+                    <div class="fc"><div class="fc-icon">📦</div><div class="fc-name">social_pack.zip</div><div class="fc-size">12.2 MB</div></div>
+                </div>
+            </section>
+
+            <!-- SHOWCASE -->
+            <section class="page" id="page-showcase">
+                <div class="ph"><h2>Showcase</h2><p>Your portfolio gallery — ready for Firebase.</p></div>
+                <div class="show-filter" id="showFilter">
+                    <button class="fb active" data-f="all">All</button>
+                    <button class="fb" data-f="branding">Branding</button>
+                    <button class="fb" data-f="poster">Poster</button>
+                    <button class="fb" data-f="social">Social</button>
+                    <button class="fb" data-f="logo">Logo</button>
+                    <button class="fb" data-f="print">Print</button>
+                </div>
+                <div class="showcase-grid">
+                    <div class="sk"><div class="sk-thumb">🖼️</div><div class="sk-info"><h4>Thika Tech Cover</h4><p>Print · Magazine</p></div></div>
+                    <div class="sk"><div class="sk-thumb">🧃</div><div class="sk-info"><h4>ZURI FRESH Label</h4><p>Branding · Product</p></div></div>
+                    <div class="sk"><div class="sk-thumb">🛡️</div><div class="sk-info"><h4>Digital Safety</h4><p>Poster · Infographic</p></div></div>
+                    <div class="sk"><div class="sk-thumb">🎬</div><div class="sk-info"><h4>Tech Tutorial Thumb</h4><p>Social · YouTube</p></div></div>
+                    <div class="sk"><div class="sk-thumb">🏠</div><div class="sk-info"><h4>House Essentials</h4><p>Logo · Branding</p></div></div>
+                    <div class="sk"><div class="sk-thumb">🪑</div><div class="sk-info"><h4>Nyakwere Furnitures</h4><p>Branding · Identity</p></div></div>
+                </div>
+            </section>
+
+            <!-- SETTINGS -->
+            <section class="page" id="page-settings">
+                <div class="ph"><h2>Settings</h2><p>Personalise your dashboard experience.</p></div>
+                <div class="settings-grid">
+                    <div class="sg">
+                        <h3>🎨 Appearance</h3>
+                        <div class="sr"><div class="sri"><strong>Dark Mode</strong><span>Toggle dark or light</span></div><label class="tog"><input type="checkbox" id="themeToggle" checked><span class="tog-sl"></span></label></div>
+                        <div class="sr"><div class="sri"><strong>Follow System Theme</strong><span>Auto-match device setting</span></div><label class="tog"><input type="checkbox" id="sysToggle" checked><span class="tog-sl"></span></label></div>
+                    </div>
+                    <div class="sg">
+                        <h3>🔐 Security</h3>
+                        <div class="sr"><div class="sri"><strong>Two-Factor Auth</strong><span>Extra layer on login</span></div><label class="tog"><input type="checkbox" checked><span class="tog-sl"></span></label></div>
+                        <div class="sr"><div class="sri"><strong>Biometric Login</strong><span>Fingerprint or face ID</span></div><label class="tog"><input type="checkbox"><span class="tog-sl"></span></label></div>
+                    </div>
+                    <div class="sg">
+                        <h3>🔔 Notifications</h3>
+                        <div class="sr"><div class="sri"><strong>Email Notifications</strong><span>Updates via email</span></div><label class="tog"><input type="checkbox" checked><span class="tog-sl"></span></label></div>
+                        <div class="sr"><div class="sri"><strong>Push Notifications</strong><span>Browser push alerts</span></div><label class="tog"><input type="checkbox"><span class="tog-sl"></span></label></div>
+                        <div class="sr"><div class="sri"><strong>New Commission Alert</strong><span>When form is submitted</span></div><label class="tog"><input type="checkbox" checked><span class="tog-sl"></span></label></div>
+                    </div>
+                    <div class="sg">
+                        <h3>📱 Trusted Devices</h3>
+                        <div class="sr"><div class="sri"><strong>This Device</strong><span>Active now · Nairobi, KE</span></div><span style="color:var(--ok);font-weight:600;font-size:11.5px;">Current</span></div>
+                        <div class="sr"><div class="sri"><strong>iPhone (Safari)</strong><span>2 hrs ago · Nairobi, KE</span></div><span style="color:var(--t3);font-size:11.5px;">Trusted</span></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>

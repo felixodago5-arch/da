@@ -1,0 +1,64 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── ADMIN UID ──
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'eUmOKNfS5ac1glpBQvTUt0zZw1i2';
+    }
+
+    // ── AUTHENTICATED ──
+    function isAuth() {
+      return request.auth != null;
+    }
+
+    // ── DESIGNS — public read, admin write ──
+    match /designs/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── TESTIMONIALS — public read, admin write ──
+    match /testimonials/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ── COMMISSIONS — admin full access, client reads their own ──
+    match /commissions/{id} {
+      allow read: if isAdmin() ||
+        (isAuth() && resource.data.clientEmail == request.auth.token.email);
+      allow write: if isAdmin();
+    }
+
+    // ── USERS — admin reads all, user reads/writes own ──
+    match /users/{uid} {
+      allow read: if isAdmin() || (isAuth() && request.auth.uid == uid);
+      allow write: if isAdmin() || (isAuth() && request.auth.uid == uid);
+    }
+
+    // ── MESSAGES — admin + thread participants only ──
+    match /messages/{threadId}/msgs/{msgId} {
+      allow read, write: if isAuth() && (
+        isAdmin() ||
+        threadId.matches('.*' + request.auth.uid + '.*')
+      );
+    }
+  }
+}
+
+// ════════════════════════════════════════
+// FIREBASE STORAGE RULES
+// Paste these in Storage → Rules
+// ════════════════════════════════════════
+//
+// rules_version = '2';
+// service firebase.storage {
+//   match /b/{bucket}/o {
+//     match /designs/{allPaths=**} {
+//       allow read: if true;
+//       allow write: if request.auth != null
+//         && request.auth.uid == 'Q5Myft7uaRYoSkxuZ1oF0SdOOoD3';
+//     }
+//   }
+// }

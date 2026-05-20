@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Felix James — Sign In</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --font-sans: 'DM Sans', system-ui, sans-serif;
+            --font-display: 'Syne', sans-serif;
+            --accent: #14b8a6;
+            --accent-h: #0d9f8f;
+            --accent-s: rgba(20,184,166,0.12);
+            --bg: #0e1117;
+            --card: #171a21;
+            --b1: rgba(255,255,255,0.07);
+            --b2: rgba(255,255,255,0.12);
+            --t1: #e9edf2;
+            --t2: #b0b8c4;
+            --t3: #788290;
+            --t4: #5a6474;
+            --danger: #ef4444;
+            --ok: #10b981;
+            --input: #1a1d26;
+            --shadow-glow: 0 0 0 3px rgba(20,184,166,0.2), 0 0 32px rgba(20,184,166,0.12);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { -webkit-font-smoothing: antialiased; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--t1);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background mesh */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 20% 20%, rgba(20,184,166,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 60% at 80% 80%, rgba(59,130,246,0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        /* Grid pattern */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .login-wrap {
+            width: 100%;
+            max-width: 420px;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.5s cubic-bezier(0.4,0,0.2,1);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .brand-logo {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--accent-s);
+            border: 1px solid rgba(20,184,166,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: 20px;
+            color: var(--accent);
+        }
+        .brand h1 {
+            font-family: var(--font-display);
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--t1);
+            letter-spacing: -0.5px;
+        }
+        .brand h1 span { color: var(--accent); }
+        .brand p {
+            font-size: 13px;
+            color: var(--t3);
+            margin-top: 4px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--b1);
+            border-radius: 18px;
+            padding: 28px 26px;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+        }
+
+        /* Tab switcher */
+        .tabs {
+            display: flex;
+            background: var(--input);
+            border-radius: 10px;
+            padding: 3px;
+            margin-bottom: 24px;
+            gap: 3px;
+        }
+        .tab {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: var(--t3);
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            background: var(--card);
+            color: var(--t1);
+            font-weight: 600;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Form panels */
+        .panel { display: none; }
+        .panel.active { display: block; animation: fadeUp 0.25s ease; }
+
+        .form-group { margin-bottom: 16px; }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--t2);
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--b2);
+            background: var(--input);
+            color: var(--t1);
+            font-size: 14px;
+            font-family: var(--font-sans);
+            outline: none;
+            transition: all 0.2s;
+        }
+        .form-group input:focus {
+            border-color: var(--accent);
+            box-shadow: var(--shadow-glow);
+        }
+        .form-group input::placeholder { color: var(--t4); }
+
+        .btn {
+            width: 100%;
+            padding: 11px;
+            border-radius: 10px;
+            border: none;
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-display);
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 4px;
+        }
+        .btn:hover { background: var(--accent-h); transform: translateY(-1px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--b2);
+            color: var(--t2);
+            margin-top: 8px;
+        }
+        .btn-outline:hover { background: var(--b1); color: var(--t1); border-color: var(--b2); transform: none; }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 18px 0;
+            color: var(--t4);
+            font-size: 11px;
+        }
+        .divider::before, .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--b1);
+        }
+
+        /* Status messages */
+        .msg {
+            padding: 10px 13px;
+            border-radius: 9px;
+            font-size: 12.5px;
+            margin-bottom: 14px;
+            display: none;
+            align-items: flex-start;
+            gap: 8px;
+            line-height: 1.5;
+        }
+        .msg.show { display: flex; }
+        .msg.success { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); color: #10b981; }
+        .msg.error { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); color: #ef4444; }
+        .msg.info { background: var(--accent-s); border: 1px solid rgba(20,184,166,0.2); color: var(--accent); }
+
+        /* Spinner */
+        .spin {
+            width: 16px; height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+            display: none;
+        }
+        .btn.loading .spin { display: block; }
+        .btn.loading .btn-text { opacity: 0.7; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .hint {
+            text-align: center;
+            font-size: 11.5px;
+            color: var(--t4);
+            margin-top: 18px;
+            line-height: 1.6;
+        }
+        .hint a { color: var(--accent); text-decoration: none; }
+
+        /* Email sent state */
+        .sent-state {
+            text-align: center;
+            padding: 10px 0;
+            display: none;
+        }
+        .sent-state.show { display: block; animation: fadeUp 0.3s ease; }
+        .sent-icon {
+            width: 56px; height: 56px;
+            border-radius: 50%;
+            background: rgba(16,185,129,0.12);
+            border: 1px solid rgba(16,185,129,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            font-size: 24px;
+        }
+        .sent-state h3 {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--t1);
+            margin-bottom: 6px;
+        }
+        .sent-state p {
+            font-size: 13px;
+            color: var(--t3);
+            line-height: 1.6;
+        }
+        .sent-state .email-highlight {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Redirect overlay */
+        .redirect-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 999;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .redirect-overlay.show { display: flex; animation: fadeUp 0.3s ease; }
+        .redirect-overlay .spin {
+            display: block;
+            width: 32px; height: 32px;
+            border-color: var(--b2);
+            border-top-color: var(--accent);
+        }
+        .redirect-overlay p { color: var(--t3); font-size: 13px; }
+    </style>
+</head>
+<body>
+
+<div class="redirect-overlay" id="redirectOverlay">
+    <div class="spin"></div>
+    <p id="redirectMsg">Signing you in…</p>
+</div>
+
+<div class="login-wrap">
+    <div class="brand">
+        <div class="brand-logo">FJ</div>
+        <h1>Felix <span>James</span></h1>
+        <p>Portfolio Management System</p>
+    </div>
+
+    <div class="card">
+        <div class="tabs">
+            <button class="tab active" data-tab="admin">Admin Login</button>
+            <button class="tab" data-tab="client">Client Access</button>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div class="panel active" id="panel-admin">
+            <div class="msg" id="adminMsg"></div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" id="adminEmail" placeholder="jamesodago6@gmail.com" autocomplete="email">
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="adminPass" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button class="btn" id="adminBtn">
+                <div class="spin"></div>
+                <span class="btn-text">Sign In to Dashboard</span>
+            </button>
+        </div>
+
+        <!-- CLIENT PANEL -->
+        <div class="panel" id="panel-client">
+            <div class="msg info show">
+                <span>✉️</span>
+                <span>Enter your email and we'll send you a secure magic link — no password needed.</span>
+            </div>
+            <div id="clientForm">
+                <div class="msg" id="clientMsg"></div>
+                <div class="form-group">
+                    <label>Your Email Address</label>
+                    <input type="email" id="clientEmail" placeholder="you@example.com" autocomplete="email">
+                </div>
+                <button class="btn" id="clientBtn">
+                    <div class="spin"></div>
+                    <span class="btn-text">Send Magic Link</span>
+                </button>
+            </div>
+            <div class="sent-state" id="sentState">
+                <div class="sent-icon">📬</div>
+                <h3>Check your inbox</h3>
+                <p>A magic link was sent to<br><span class="email-highlight" id="sentEmail"></span><br>Click it to access your project portal.</p>
+                <button class="btn btn-outline" id="resendBtn" style="margin-top:18px;">Resend Link</button>
+            </div>
+        </div>
+    </div>
+
+    <p class="hint">
+        Having trouble? <a href="mailto:jamesodago6@gmail.com">Contact Felix</a>
+    </p>
+</div>
+
+<script type="module">
+import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js';
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    sendSignInLinkToEmail,
+    isSignInWithEmailLink,
+    signInWithEmailLink,
+    onAuthStateChanged
+} from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js';
+import { getFirestore, doc, getDoc, setDoc } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAh0JpM0BqgCwxkhFG32m6VH6okQIiSops",
+    authDomain: "felix-portfolio-8b3a8.firebaseapp.com",
+    projectId: "felix-portfolio-8b3a8",
+    storageBucket: "felix-portfolio-8b3a8.firebasestorage.app",
+    messagingSenderId: "439075265698",
+    appId: "1:439075265698:web:058c014a4f4c32a9444bfb"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const ADMIN_UID = 'Q5Myft7uaRYoSkxuZ1oF0SdOOoD3';
+
+// ── MAGIC LINK COMPLETION ──
+// If user clicked a magic link and landed here
+if (isSignInWithEmailLink(auth, window.location.href)) {
+    let email = window.localStorage.getItem('emailForSignIn');
+    if (!email) email = window.prompt('Please confirm your email address:');
+    showRedirect('Verifying your link…');
+    try {
+        const result = await signInWithEmailLink(auth, email, window.location.href);
+        window.localStorage.removeItem('emailForSignIn');
+        await ensureClientProfile(result.user, email);
+        window.location.replace('client.html');
+    } catch (err) {
+        hideRedirect();
+        showMsg('clientMsg', 'error', '❌ Invalid or expired link. Please request a new one.');
+        switchTab('client');
+    }
+}
+
+// ── AUTH STATE — redirect if already signed in ──
+onAuthStateChanged(auth, async user => {
+    if (!user) return;
+    showRedirect('Redirecting…');
+    if (user.uid === ADMIN_UID) {
+        window.location.replace('index.html');
+    } else {
+        window.location.replace('client.html');
+    }
+});
+
+// ── TABS ──
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+});
+
+function switchTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+}
+
+// ── ADMIN LOGIN ──
+document.getElementById('adminBtn').addEventListener('click', async () => {
+    const email = document.getElementById('adminEmail').value.trim();
+    const pass = document.getElementById('adminPass').value;
+    if (!email || !pass) return showMsg('adminMsg', 'error', 'Please fill in both fields.');
+    setBtnLoading('adminBtn', true);
+    clearMsg('adminMsg');
+    try {
+        const cred = await signInWithEmailAndPassword(auth, email, pass);
+        if (cred.user.uid !== ADMIN_UID) {
+            await auth.signOut();
+            showMsg('adminMsg', 'error', '⛔ Access denied. Use the Client Access tab.');
+            setBtnLoading('adminBtn', false);
+            return;
+        }
+        showRedirect('Welcome back, Felix…');
+        window.location.replace('index.html');
+    } catch (err) {
+        setBtnLoading('adminBtn', false);
+        const msgs = {
+            'auth/wrong-password': '❌ Incorrect password.',
+            'auth/user-not-found': '❌ No account found with that email.',
+            'auth/too-many-requests': '⚠️ Too many attempts. Try again later.',
+            'auth/invalid-credential': '❌ Invalid email or password.'
+        };
+        showMsg('adminMsg', 'error', msgs[err.code] || '❌ Sign in failed. Try again.');
+    }
+});
+
+// Enter key for admin
+document.getElementById('adminPass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') document.getElementById('adminBtn').click();
+});
+
+// ── CLIENT MAGIC LINK ──
+const actionCodeSettings = {
+    url: 'https://felixodago5-arch.github.io/dashboard/login.html',
+    handleCodeInApp: true
+};
+
+document.getElementById('clientBtn').addEventListener('click', async () => {
+    const email = document.getElementById('clientEmail').value.trim();
+    if (!email || !email.includes('@')) return showMsg('clientMsg', 'error', 'Please enter a valid email.');
+    setBtnLoading('clientBtn', true);
+    clearMsg('clientMsg');
+    try {
+        await sendSignInLinkToEmail(auth, email, actionCodeSettings);
+        window.localStorage.setItem('emailForSignIn', email);
+        document.getElementById('clientForm').style.display = 'none';
+        document.getElementById('sentEmail').textContent = email;
+        document.getElementById('sentState').classList.add('show');
+    } catch (err) {
+        setBtnLoading('clientBtn', false);
+        showMsg('clientMsg', 'error', '❌ Could not send link. Check the email and try again.');
+        console.error(err);
+    }
+});
+
+document.getElementById('resendBtn').addEventListener('click', () => {
+    document.getElementById('sentState').classList.remove('show');
+    document.getElementById('clientForm').style.display = 'block';
+    setBtnLoading('clientBtn', false);
+});
+
+// ── HELPERS ──
+async function ensureClientProfile(user, email) {
+    const ref = doc(db, 'users', user.uid);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+        await setDoc(ref, {
+            email,
+            role: 'client',
+            name: email.split('@')[0],
+            createdAt: new Date().toISOString(),
+            lastLogin: new Date().toISOString()
+        });
+    } else {
+        await setDoc(ref, { lastLogin: new Date().toISOString() }, { merge: true });
+    }
+}
+
+function showMsg(id, type, text) {
+    const el = document.getElementById(id);
+    el.className = `msg ${type} show`;
+    el.textContent = text;
+}
+function clearMsg(id) {
+    const el = document.getElementById(id);
+    el.className = 'msg';
+    el.textContent = '';
+}
+function setBtnLoading(id, state) {
+    document.getElementById(id).classList.toggle('loading', state);
+    document.getElementById(id).disabled = state;
+}
+function showRedirect(msg) {
+    document.getElementById('redirectMsg').textContent = msg;
+    document.getElementById('redirectOverlay').classList.add('show');
+}
+function hideRedirect() {
+    document.getElementById('redirectOverlay').classList.remove('show');
+}
+</script>
+</body>
+</html>
