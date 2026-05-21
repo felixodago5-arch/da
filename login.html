@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+    <link rel="icon" type="image" href="assets/image/192.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Felix James — Sign In</title>
@@ -84,8 +85,8 @@
             width: 52px;
             height: 52px;
             border-radius: 14px;
-            background: var(--accent-s);
-            border: 1px solid rgba(20,184,166,0.3);
+           
+            
             display: flex;
             align-items: center;
             justify-content: center;
@@ -324,9 +325,9 @@
 
 <div class="login-wrap">
     <div class="brand">
-        <div class="brand-logo">FJ</div>
+        <div class="brand-logo"><img src="assets/image/icon-512.png " width="51" ></div>
         <h1>Felix <span>James</span></h1>
-        <p>Portfolio Management System</p>
+        <p>Project Management System</p>
     </div>
 
     <div class="card">
@@ -407,7 +408,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
-const ADMIN_UID = 'Q5Myft7uaRYoSkxuZ1oF0SdOOoD3';
+const ADMIN_UID = 'eUmOKNfS5ac1glpBQvTUt0zZw1i2';
 
 // ── MAGIC LINK COMPLETION ──
 // If user clicked a magic link and landed here
@@ -430,6 +431,8 @@ if (isSignInWithEmailLink(auth, window.location.href)) {
 // ── AUTH STATE — redirect if already signed in ──
 onAuthStateChanged(auth, async user => {
     if (!user) return;
+    // Don't redirect if we're processing a magic link
+    if (isSignInWithEmailLink(auth, window.location.href)) return;
     showRedirect('Redirecting…');
     if (user.uid === ADMIN_UID) {
         window.location.replace('index.html');
@@ -485,7 +488,7 @@ document.getElementById('adminPass').addEventListener('keydown', e => {
 
 // ── CLIENT MAGIC LINK ──
 const actionCodeSettings = {
-    url: 'https://felixodago5-arch.github.io/da/login.html',
+    url: 'https://felixodago5-arch.github.io/dashboard/login.html',
     handleCodeInApp: true
 };
 
@@ -552,5 +555,6 @@ function hideRedirect() {
     document.getElementById('redirectOverlay').classList.remove('show');
 }
 </script>
+
 </body>
 </html>

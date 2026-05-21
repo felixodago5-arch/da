@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
+     <link rel="icon" type="image" href="assets/image/192.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Projects — Felix James</title>
@@ -430,7 +431,7 @@
 <!-- TOPBAR -->
 <nav class="topbar">
     <div class="topbar-brand">
-        <div class="topbar-logo">FJ</div>
+        <div class="topbar-logo"><img src="assets/image/192.png" width="44" height="44" alt="Felix James"></div>
         <div class="topbar-name">Felix <span>James</span></div>
     </div>
     <div class="topbar-right">
@@ -548,9 +549,22 @@ let currentCommissions = [];
 let unsubMessages = null;
 
 // ── AUTH GUARD ──
+let authChecked = false;
 onAuthStateChanged(auth, async user => {
-    if (!user) { window.location.replace('login.html'); return; }
-    if (user.uid === ADMIN_UID) { window.location.replace('index.html'); return; }
+    if (authChecked) return;
+    authChecked = true;
+
+    if (!user) {
+        // Wait a bit — magic link session may still be propagating
+        setTimeout(() => {
+            if (!auth.currentUser) window.location.replace('login.html');
+        }, 2000);
+        return;
+    }
+    if (user.uid === ADMIN_UID) {
+        window.location.replace('index.html');
+        return;
+    }
     currentUser = user;
     await loadClientDashboard(user);
 });
@@ -565,8 +579,13 @@ document.getElementById('signoutBtn').addEventListener('click', async () => {
 // ── LOAD DASHBOARD ──
 async function loadClientDashboard(user) {
     // Get user profile
-    const userDoc = await getDoc(doc(db, 'users', user.uid));
-    const profile = userDoc.exists() ? userDoc.data() : { name: user.email.split('@')[0], email: user.email };
+    let profile = { name: user.email.split('@')[0], email: user.email };
+    try {
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) profile = userDoc.data();
+    } catch (e) {
+        console.warn('Could not load profile:', e);
+    }
 
     // Render welcome
     const name = profile.name || user.email.split('@')[0];
@@ -575,9 +594,14 @@ async function loadClientDashboard(user) {
     document.getElementById('welcomeEmail').textContent = user.email;
 
     // Load commissions for this client
+   try {
     const q = query(collection(db, 'commissions'), where('clientEmail', '==', user.email));
     const snap = await getDocs(q);
     currentCommissions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+} catch (e) {
+    console.warn('Could not load commissions:', e);
+    currentCommissions = [];
+}
 
     renderProjects(currentCommissions);
     renderReceipts(currentCommissions);

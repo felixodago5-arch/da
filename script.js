@@ -69,17 +69,22 @@ async function initDashboard() {
 }
  
 async function loadAllData() {
-    const [designs, commissions, testimonials, users] = await Promise.all([
-        fetchCol('designs'),
-        fetchCol('commissions'),
-        fetchCol('testimonials'),
-        fetchCol('users')
-    ]);
-    _designs      = designs;
-    _commissions  = commissions;
-    _testimonials = testimonials;
-    _users        = users;
- 
+    try {
+        const [designs, commissions, testimonials, users] = await Promise.all([
+            fetchCol('designs').catch(() => []),
+            fetchCol('commissions').catch(() => []),
+            fetchCol('testimonials').catch(() => []),
+            fetchCol('users').catch(() => [])
+        ]);
+        _designs      = designs;
+        _commissions  = commissions;
+        _testimonials = testimonials;
+        _users        = users;
+    } catch (err) {
+        console.warn('Data load error:', err);
+    }
+
+    // Always render even if data fetch fails
     renderStatCards();
     renderRecentActivity();
     renderCommissionProgress();
@@ -620,13 +625,14 @@ function initUI() {
     // ── THEME ──
     const sysDark = () => window.matchMedia('(prefers-color-scheme: dark)').matches;
     function applyTheme(dark) {
-        html.setAttribute('data-theme', dark ? 'dark' : 'light');
-        if (themeToggle) themeToggle.checked = dark;
-        if (themeIco) themeIco.innerHTML = dark
-            ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
-            : '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-        setTimeout(drawCharts, 80);
-    }
+    html.setAttribute('data-theme', dark ? 'dark' : 'light');
+    if (themeToggle) themeToggle.checked = dark;
+    if (themeIco) themeIco.innerHTML = dark
+        ? '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>'
+        : '<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
+    // Only call drawCharts if it's already defined
+    if (typeof window.drawCharts === 'function') setTimeout(window.drawCharts, 80);
+}
     function loadTheme() {
         const follow = localStorage.getItem('follow-sys') !== 'false';
         const manual = localStorage.getItem('manual-theme');
@@ -709,14 +715,18 @@ function initUI() {
     document.addEventListener('click', () => document.querySelectorAll('.dd.active').forEach(d=>d.classList.remove('active')));
  
     // ── SIGN OUT ──
-    document.querySelector('[href="#"]')?.addEventListener('click', async e => {
-        if (e.target.textContent.includes('Sign Out')) {
+    document.querySelectorAll('.dd-menu a').forEach(a => {
+    if (a.textContent.trim().includes('Sign Out')) {
+        a.addEventListener('click', async e => {
             e.preventDefault();
+            e.stopPropagation();
             if (unsubMessages) unsubMessages();
             await signOut(auth);
             window.location.replace('login.html');
-        }
-    });
+        });
+    }
+});
+    
     // Also wire the actual sign out link in dropdown
     document.querySelectorAll('.dd-menu a').forEach(a => {
         if (a.textContent.includes('Sign Out')) {
