@@ -1,0 +1,42 @@
+{
+    "name": "Felix James — Portfolio Manager",
+    "short_name": "da",
+    "description": "admin dashboard and client portal.",
+    "start_url": "/dashboard/login.html",
+    "scope": "/da/",
+    "display": "standalone",
+    "orientation": "portrait-primary",
+    "background_color": "#0e1117",
+    "theme_color": "#14b8a6",
+    "categories": ["business", "productivity"],
+    "icons": [
+        {
+            "src": "../assets/image/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "../assets/image/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Admin Dashboard",
+            "short_name": "Dashboard",
+            "url": "/dashboard/index.html",
+            "icons": [{ "src": "../assets/image/192.png", "sizes": "192x192" }]
+        },
+        {
+            "name": "Client Portal",
+            "short_name": "My Projects",
+            "url": "/dashboard/client.html",
+            "icons": [{ "src": "../assets/image/192.png", "sizes": "192x192" }]
+        }
+    ],
+    "lang": "en",
+    "dir": "ltr"
+}

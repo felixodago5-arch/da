@@ -6,6 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Projects — Felix James</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+    <!-- PWA -->
+<meta name="theme-color" content="#14b8a6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FJ Dashboard">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="../assets/image/192.png">
     <style>
         :root {
             --font-sans: 'DM Sans', system-ui, sans-serif;
@@ -69,6 +76,8 @@
         }
         .topbar-logo {
             width: 32px; height: 32px;
+            border-radius: 9px;
+            background: var(--accent-s);
             border: 1px solid rgba(20,184,166,0.25);
             display: flex; align-items: center; justify-content: center;
             font-family: var(--font-display);
@@ -755,6 +764,15 @@ window.closeInvoice = () => document.getElementById('invoiceModal').classList.re
 document.getElementById('invoiceModal').addEventListener('click', e => {
     if (e.target === document.getElementById('invoiceModal')) window.closeInvoice();
 });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/dashboard/sw.js')
+            .then(r => console.log('%c✅ SW registered', 'color:#14b8a6'))
+            .catch(e => console.warn('SW failed:', e));
+    });
+}
 </script>
 </body>
 </html>

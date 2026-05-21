@@ -7,6 +7,13 @@
     <title>Admin Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <!-- PWA -->
+<meta name="theme-color" content="#14b8a6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="FJ Dashboard">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="../assets/image/192.png">
 </head>
 <body >
 <div class="app">
@@ -507,4 +514,13 @@
 
 <script type="module" src="script.js"></script>
 </body>
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/dashboard/sw.js')
+            .then(r => console.log('%c✅ SW registered', 'color:#14b8a6'))
+            .catch(e => console.warn('SW failed:', e));
+    });
+}
+</script>
 </html>
