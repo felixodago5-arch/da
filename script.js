@@ -49,7 +49,24 @@ function resetInactivity() {
 ['mousemove','keydown','click','touchstart'].forEach(e =>
     document.addEventListener(e, resetInactivity, { passive: true })
 );
- 
+ // ── PAGE VISIBILITY LOCK ──
+// ── PAGE VISIBILITY LOCK ──
+let lockTimer = null;
+
+document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+        lockTimer = setTimeout(() => {
+            // Force clear everything and redirect
+            signOut(auth).finally(() => {
+                window.location.href = 'login.html?locked=1';
+            });
+        }, 60 * 1000);
+    } else {
+        // Came back — cancel lock
+        clearTimeout(lockTimer);
+        lockTimer = null;
+    }
+});
 // ════════════════════════════════════════
 //  CACHE
 // ════════════════════════════════════════
