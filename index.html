@@ -517,7 +517,7 @@
 <script>
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/dashboard/sw.js')
+        navigator.serviceWorker.register('/da/sw.js', { scope: '/da/' })
             .then(r => console.log('%c✅ SW registered', 'color:#14b8a6'))
             .catch(e => console.warn('SW failed:', e));
     });

@@ -2,7 +2,7 @@
     "name": "Felix James — Portfolio Manager",
     "short_name": "da",
     "description": "admin dashboard and client portal.",
-    "start_url": "/dashboard/login.html",
+    "start_url": "/da/login.html",
     "scope": "/da/",
     "display": "standalone",
     "orientation": "portrait-primary",
@@ -27,13 +27,13 @@
         {
             "name": "Admin Dashboard",
             "short_name": "Dashboard",
-            "url": "/dashboard/index.html",
+            "url": "/da/index.html",
             "icons": [{ "src": "../assets/image/192.png", "sizes": "192x192" }]
         },
         {
             "name": "Client Portal",
             "short_name": "My Projects",
-            "url": "/dashboard/client.html",
+            "url": "/da/client.html",
             "icons": [{ "src": "../assets/image/192.png", "sizes": "192x192" }]
         }
     ],
