@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fj-dashboard-v1';
+const CACHE_NAME = 'dashboard-v1';
 
 const SHELL_ASSETS = [
     '/da/login.html',
@@ -56,7 +56,7 @@ self.addEventListener('fetch', event => {
                 caches.match(request).then(cached => {
                     if (cached) return cached;
                     if (request.headers.get('accept')?.includes('text/html')) {
-                        return caches.match('/dashboard/offline.html');
+                        return caches.match('/da/offline.html');
                     }
                 })
             )
