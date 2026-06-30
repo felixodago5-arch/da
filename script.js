@@ -9,7 +9,8 @@ import {
     orderBy, onSnapshot, serverTimestamp, setDoc
 } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js';
 import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-storage.js';
- 
+import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging.js';
+
 const firebaseConfig = {
     apiKey: "AIzaSyAh0JpM0BqgCwxkhFG32m6VH6okQIiSops",
     authDomain: "felix-portfolio-8b3a8.firebaseapp.com",
@@ -18,23 +19,52 @@ const firebaseConfig = {
     messagingSenderId: "439075265698",
     appId: "1:439075265698:web:058c014a4f4c32a9444bfb"
 };
- 
-const app     = initializeApp(firebaseConfig);
-const auth    = getAuth(app);
-const db      = getFirestore(app);
-const storage = getStorage(app);
+
+const app       = initializeApp(firebaseConfig);
+const auth      = getAuth(app);
+const db        = getFirestore(app);
+const storage   = getStorage(app);
+const messaging = getMessaging(app);
+const VAPID_KEY = 'BEXAFghi2VaVz5RBCkZmrU-XoKLG4f48EpwOmzC7XkdN9QWcW_oSh-k42hNbRVqqvVQUI3B0hwer2x6EWqlatsM';
 const ADMIN_UID = 'eUmOKNfS5ac1glpBQvTUt0zZw1i2';
- 
+
 // ════════════════════════════════════════
 //  AUTH GUARD — redirect if not admin
 // ════════════════════════════════════════
 onAuthStateChanged(auth, user => {
     if (!user) { window.location.replace('login.html'); return; }
     if (user.uid !== ADMIN_UID) { window.location.replace('client.html'); return; }
-    // Admin confirmed — boot dashboard
     initDashboard();
 });
- 
+
+// ════════════════════════════════════════
+//  FCM TOKEN SETUP (Admin)
+// ════════════════════════════════════════
+async function setupNotifications() {
+    try {
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') {
+            console.log('Notification permission not granted');
+            return;
+        }
+        const token = await getToken(messaging, { vapidKey: VAPID_KEY });
+        if (token) {
+            await setDoc(doc(db, 'fcmTokens', ADMIN_UID), {
+                token,
+                role: 'admin',
+                updatedAt: new Date().toISOString()
+            });
+            console.log('%c🔔 Admin notifications enabled', 'color:#14b8a6;font-weight:600;');
+        }
+    } catch (err) {
+        console.warn('FCM setup failed:', err);
+    }
+
+    onMessage(messaging, payload => {
+        console.log('Foreground message:', payload);
+    });
+}
+
 // ════════════════════════════════════════
 //  INACTIVITY AUTO SIGN-OUT (30 min)
 // ════════════════════════════════════════
@@ -49,24 +79,22 @@ function resetInactivity() {
 ['mousemove','keydown','click','touchstart'].forEach(e =>
     document.addEventListener(e, resetInactivity, { passive: true })
 );
- // ── PAGE VISIBILITY LOCK ──
+
 // ── PAGE VISIBILITY LOCK ──
 let lockTimer = null;
-
 document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'hidden') {
         lockTimer = setTimeout(() => {
-            // Force clear everything and redirect
             signOut(auth).finally(() => {
                 window.location.href = 'login.html?locked=1';
             });
         }, 60 * 1000);
     } else {
-        // Came back — cancel lock
         clearTimeout(lockTimer);
         lockTimer = null;
     }
 });
+
 // ════════════════════════════════════════
 //  CACHE
 // ════════════════════════════════════════
@@ -74,29 +102,91 @@ let _designs      = [];
 let _commissions  = [];
 let _testimonials = [];
 let _users        = [];
+let _reviews      = [];
+
+// ════════════════════════════════════════
+//  REVIEWS
+// ════════════════════════════════════════
+function renderReviews() {
+    const total    = _reviews.length;
+    const positive = _reviews.filter(r => r.thumb === 'up').length;
+    const negative = total - positive;
+    const pct      = total ? Math.round((positive / total) * 100) : 0;
+
+    // Update summary cards
+    const el = id => document.getElementById(id);
+    if (el('reviewTotal'))    el('reviewTotal').textContent    = total;
+    if (el('reviewPositive')) el('reviewPositive').textContent = positive;
+    if (el('reviewNegative')) el('reviewNegative').textContent = negative;
+    if (el('reviewPct'))      el('reviewPct').textContent      = total ? `${pct}% positive` : '—';
+
+    // Update sidebar badge
+    const badge = document.getElementById('reviewsBadge');
+    if (badge) {
+        if (total > 0) { badge.textContent = total; badge.style.display = 'inline-flex'; }
+        else badge.style.display = 'none';
+    }
+
+    // Update notification dropdown
+    const notifItem = document.querySelector('#ddNotif .dd-menu a:nth-child(2)');
+    if (notifItem && total > 0) {
+        notifItem.textContent = `👍 ${total} portfolio review${total > 1 ? 's' : ''} received`;
+    }
+
+    // Render list
+    const list = document.getElementById('reviewsList');
+    if (!list) return;
+    if (!total) return;
+
+    list.innerHTML = [..._reviews].reverse().map(r => {
+        const isUp = r.thumb === 'up';
+        const date = r.createdAt
+            ? new Date(r.createdAt).toLocaleDateString('en-KE', {day:'numeric', month:'short', year:'numeric'})
+            : 'Recently';
+        return `
+        <div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--b1);">
+            <div style="width:36px;height:36px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;background:${isUp ? 'var(--ok-s)' : 'var(--danger-s)'};">
+                ${isUp ? '👍' : '👎'}
+            </div>
+            <div style="flex:1;min-width:0;">
+                <div style="font-size:13px;color:var(--t1);line-height:1.5;">${r.reason || 'No comment left.'}</div>
+                <div style="font-size:11px;color:var(--t4);margin-top:4px;">${date}</div>
+            </div>
+            <span style="font-size:10px;font-weight:600;padding:3px 9px;border-radius:99px;flex-shrink:0;background:${isUp ? 'var(--ok-s)' : 'var(--danger-s)'};color:${isUp ? 'var(--ok)' : 'var(--danger)'};">
+                ${isUp ? 'Positive' : 'Needs Work'}
+            </span>
+        </div>`;
+    }).join('');
+}
  
 // ════════════════════════════════════════
 //  BOOT
 // ════════════════════════════════════════
 async function initDashboard() {
+    const loader = document.getElementById('authLoader');
+    if (loader) loader.remove();
+
     resetInactivity();
+    setupNotifications();
     await loadAllData();
     initUI();
     console.log('%c🎨 Felix James Dashboard ready (Admin)', 'color:#14b8a6;font-weight:800;');
 }
+
  
 async function loadAllData() {
     try {
-        const [designs, commissions, testimonials, users] = await Promise.all([
-            fetchCol('designs').catch(() => []),
-            fetchCol('commissions').catch(() => []),
-            fetchCol('testimonials').catch(() => []),
-            fetchCol('users').catch(() => [])
-        ]);
-        _designs      = designs;
-        _commissions  = commissions;
-        _testimonials = testimonials;
-        _users        = users;
+       const [designs, commissions, testimonials, users] = await Promise.all([
+    fetchCol('designs').catch(() => []),
+    fetchCol('commissions').catch(() => []),
+    fetchCol('testimonials').catch(() => []),
+    fetchCol('users').catch(() => []),
+    fetchCol('reviews').catch(() => [])
+]);
+_designs      = designs;
+_commissions  = commissions;
+_testimonials = testimonials;
+_users        = users;
     } catch (err) {
         console.warn('Data load error:', err);
     }
@@ -109,6 +199,7 @@ async function loadAllData() {
     renderShowcase();
     renderUsersPage();
     renderTestimonialsBadge();
+    renderReviews();
 }
  
 async function fetchCol(name) {
